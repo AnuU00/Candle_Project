@@ -1,0 +1,46 @@
+mysql> create database candle_factory;
+Query OK, 1 row affected (1.32 sec)
+
+mysql> use candle_factory;
+Database changed
+mysql> create table employee(ssn varchar(11), f_name varchar(40) not null, l_name varchar(40) not null, street varchar(50), city varchar(50), state varchar(10), dob date, gender enum('male','female','other') not null, date_hired date, primary key(ssn));
+Query OK, 0 rows affected (3.37 sec)
+
+mysql> create table visitor(visit_id int auto_increment primary key, name varchar(100) not null, drivers_license varchar(20), tp varchar(20) not null, date date, in_time time, out_time time, purpose text);
+Query OK, 0 rows affected (0.61 sec)
+
+mysql> alter table visitor auto_increment=100;
+Query OK, 0 rows affected (0.82 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> create table production(id int auto_increment primary key, date_made date, qty int not null);
+Query OK, 0 rows affected (0.42 sec)
+
+mysql> create table candle(candle_id varchar(4) primary key, candle_type varchar(40) not null, unit_price decimal(10, 2), qty int);
+Query OK, 0 rows affected (0.39 sec)
+
+mysql> create table distributor(dis_id int auto_increment primary key, name varchar(50) not null, address varchar(100), tp varchar(20));
+Query OK, 0 rows affected (0.34 sec)
+
+mysql> create table supplier(sup_id int auto_increment primary key, name varchar(50) not null, address varchar(100), tp varchar(20));
+Query OK, 0 rows affected (0.56 sec)
+
+mysql> create table wax_order(order_no int auto_increment primary key,sup_id int, wax_type varchar(30) not null, qty_kg decimal(10, 3) not null, date date, check_by varchar(11), foreign key(sup_id) references supplier(sup_id), foreign key(check_by) references employee(ssn));
+Query OK, 0 rows affected (0.68 sec)
+
+mysql> create table ot_payment(rec_no int auto_increment primary key, ssn varchar(11), ot_hours int, pay_month varchar(20), date date, ot_salary decimal(10, 2), foreign key(ssn) references employee(ssn));
+Query OK, 0 rows affected (0.33 sec)
+
+mysql> create table shipment(ship_id int auto_increment primary key, dis_id int, qty int, price decimal(10, 2), ship_date date, check_by varchar(11), foreign key(dis_id) references distributor(dis_id), foreign key(check_by) references employee(ssn));
+Query OK, 0 rows affected (0.38 sec)
+
+mysql> create table sys_user(user_id varchar(20) primary key, password varchar(30) not null, ssn varchar(11), role varchar(30), foreign key(ssn) references employee(ssn));
+Query OK, 0 rows affected (0.25 sec)
+
+mysql> create table production_details(id int not null, candle_id varchar(4), qty int, primary key(id, candle_id), foreign key(id) references production(id), foreign key(candle_id) references candle(candle_id));
+Query OK, 0 rows affected (0.38 sec)
+
+mysql> create table ship_details(ship_id int not null, candle_id varchar(4) not null, qty int, price decimal(10, 2), primary key(ship_id, candle_id), foreign key(ship_id) references shipment(ship_id), foreign key(candle_id) references candle(candle_id));
+Query OK, 0 rows affected (0.50 sec)
+
+mysql> Terminal close -- exit!
